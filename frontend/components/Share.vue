@@ -148,31 +148,37 @@ const isSubmitting = ref(false)
 const isRecorded = ref(false)
 const savedRecords = ref<any[]>([])
 
-// 오늘 자 퍼즐인지 판단
-const isTodayPuzzle = computed(() => {
+/** 오늘 자 퍼즐 여부 (오늘 일자 퍼즐일 경우에만 리더보드 기록 가능) */
+const isTodayPuzzle = computed<boolean>(() => {
   return state.puzzle_number === todayPuzzleNumber()
 })
 
-// 총 시도 횟수
-const guessCount = computed(() => {
+/** 총 시도 횟수 (통계 데이터 기준, 데이터 부재 시 리스트 길이 또는 기본값 1 반환) */
+const guessCount = computed<number>(() => {
   return state.statistics?.last_guess_count || state.guess_data_list?.length || 1
 })
 
-// 최고 유사 순위 (정답 제외 최고 순위, 1회차 정답 시 1위)
-const bestRank = computed(() => {
+/**
+ * 최고 유사 순위 산출 (정답 1위를 제외한 추측 중 최고 순위, 1회차 정답 시 1위 반환)
+ */
+const bestRank = computed<number>(() => {
+  // 1. 저장된 통계 데이터 내 최고 순위가 존재하는 경우 우선 반환
   if (state.statistics?.last_best_guess?.rank !== undefined) {
     return state.statistics.last_best_guess.rank
   }
-  if (!state.guess_data_list || state.guess_data_list.length === 0) return 1
-  const nonCorrect = state.guess_data_list.filter((g) => g.rank > 1)
-  if (nonCorrect.length === 0) return 1
-  return Math.min(...nonCorrect.map((g) => g.rank))
+  // 2. 정답(rank=1)을 제외한 일반 추측들의 순위 수치 목록 추출
+  const nonCorrectRanks = (state.guess_data_list || [])
+    .filter((g) => g.rank > 1)
+    .map((g) => g.rank)
+
+  // 3. 일반 추측이 있는 경우 최댓값(최고 순위) 산출, 1회차 정답 시 기본값 1 반환
+  return nonCorrectRanks.length > 0 ? Math.min(...nonCorrectRanks) : 1
 })
 
-// 최저 유사 순위 (최대 rank 번호)
-const worstRank = computed(() => {
-  if (!state.guess_data_list || state.guess_data_list.length === 0) return 1
-  return Math.max(...state.guess_data_list.map((g) => g.rank))
+/** 최저 유사 순위 산출 (추측 목록 중 가장 낮은 순위 수치) */
+const worstRank = computed<number>(() => {
+  const ranks = (state.guess_data_list || []).map((g) => g.rank)
+  return ranks.length > 0 ? Math.max(...ranks) : 1
 })
 
 onMounted(() => {
