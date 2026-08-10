@@ -20,7 +20,7 @@
         </div>
         <div v-if="formula_detail" class="mt-1">
           <span class="px-2 py-0.5 text-[11px] font-mono rounded bg-indigo-100 dark:bg-indigo-900/80 text-indigo-800 dark:text-indigo-200">
-            📊 계산 구성: {{ formula_detail }}
+            {{ $t('champion-info-formula-breakdown', { detail: formula_detail }) }}
           </span>
         </div>
       </div>
@@ -30,14 +30,14 @@
     <div class="p-2 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900/60">
       <div class="flex items-center justify-between mb-1.5">
         <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-indigo-100 text-indigo-800 dark:bg-indigo-900/80 dark:text-indigo-200">
-          📌 공식 카테고리 항목 (80점 만점 요인)
+          {{ $t('champion-info-category-section-title') }}
         </span>
       </div>
       <div class="grid grid-cols-1 xs:grid-cols-2 gap-2">
         <ChampionInfoBlock class="bg-white/90 dark:bg-slate-900/90 border-indigo-100 dark:border-indigo-900/40 p-2 space-y-1.5">
           <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
             <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-release-order') }}</span>
-            <span class="font-medium text-gray-800 dark:text-slate-200">{{ champion.champion_id }}번째</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ $t('champion-info-release-order-value', { id: String(champion.champion_id) }) }}</span>
           </div>
           <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
             <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-region') }}</span>
@@ -69,7 +69,7 @@
           <div class="flex justify-between items-center pb-1.5 last:border-0 last:pb-0">
             <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-role-2') }}</span>
             <ChampionInfoTag :class="roleBgClass(champion.tag_2)">{{
-              champion.tag_2 !== null && champion.tag_2 !== '' ? trVal(champion.tag_2) : "없음"
+              champion.tag_2 !== null && champion.tag_2 !== '' ? trVal(champion.tag_2) : $t("none")
             }}</ChampionInfoTag>
           </div>
         </ChampionInfoBlock>
@@ -80,7 +80,7 @@
     <div class="p-2 rounded-lg bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60">
       <div class="flex items-center justify-between mb-1.5">
         <span class="px-2 py-0.5 text-[11px] font-bold rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-900/80 dark:text-emerald-200">
-          📊 공식 스탯 Min-Max 항목 (20점 만점 요인)
+          {{ $t('champion-info-stat-section-title') }}
         </span>
       </div>
       <div class="grid grid-cols-1 xs:grid-cols-2 gap-2">
@@ -154,7 +154,7 @@ const championImageUrl = computed(() => {
 })
 
 function trVal(val: any): string {
-  if (val === null || val === undefined || val === '') return '없음'
+  if (val === null || val === undefined || val === '') return state.locale === 'ko' ? '없음' : 'None'
   if (state.locale !== 'ko') return String(val)
   const map: Record<string, string> = {
     // Roles

@@ -15,19 +15,19 @@
           <div class="flex items-center space-x-2">
             <span class="text-xl">📜</span>
             <h3 class="font-bold text-base text-gray-900 dark:text-slate-100">
-              챔피언 도감
+              {{ $t('champion-modal-title') }}
             </h3>
             <span
               class="px-2 py-0.5 text-xs font-semibold rounded-full bg-indigo-100 dark:bg-indigo-900/80 text-indigo-800 dark:text-indigo-200"
             >
-              {{ filteredChampions.length }} / {{ state.api_data.champions.length }}명
+              {{ $t('champion-modal-count', { filtered: String(filteredChampions.length), total: String(state.api_data.champions.length) }) }}
             </span>
           </div>
 
           <button
             @click="closeModal"
             class="p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-slate-200 hover:bg-gray-200 dark:hover:bg-slate-700 transition-colors"
-            title="닫기"
+            :title="$t('none')"
           >
             <svg
               class="w-5 h-5"
@@ -52,10 +52,10 @@
               @click="selectedChampion = null"
               class="flex items-center space-x-1 px-3 py-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors"
             >
-              <span>← 목록으로 돌아가기</span>
+              <span>{{ $t('champion-modal-back-button') }}</span>
             </button>
             <span class="text-xs text-gray-500 dark:text-slate-400">
-              클릭하여 상세 정보 확인 중
+              {{ $t('champion-modal-viewing-details') }}
             </span>
           </div>
 
@@ -73,7 +73,7 @@
                 <input
                   v-model="searchQuery"
                   type="text"
-                  placeholder="챔피언 이름 검색..."
+                  :placeholder="$t('champion-modal-search-placeholder')"
                   class="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-slate-100"
                 />
                 <span class="absolute left-2.5 top-2 text-gray-400 text-xs">🔍</span>
@@ -89,7 +89,7 @@
                     : 'bg-gray-100 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700'
                 ]"
               >
-                <span>⚙️ 세부 필터</span>
+                <span>{{ $t('champion-modal-filter-title') }}</span>
                 <span
                   v-if="activeFilterCount > 0"
                   class="ml-1 px-1.5 py-0.2 text-[10px] font-bold bg-indigo-600 text-white rounded-full"
@@ -100,11 +100,11 @@
 
               <!-- Reset Filters Button -->
               <button
-                v-if="activeFilterCount > 0 || searchQuery || selectedChoseong !== '전체'"
+                v-if="activeFilterCount > 0 || searchQuery || isFilterActive"
                 @click="resetAllFilters"
                 class="px-2.5 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/60 transition-colors"
               >
-                🔄 초기화
+                {{ $t('champion-modal-filter-reset') }}
               </button>
             </div>
 
@@ -116,12 +116,12 @@
               >
                 <!-- 1. 소속 (Region) -->
                 <div>
-                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">🏛️ 소속</label>
+                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">{{ $t('champion-modal-filter-region') }}</label>
                   <select
                     v-model="filterRegion"
                     class="w-full text-xs py-1 px-1.5 rounded bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="전체">전체 소속</option>
+                    <option :value="ALL_KEY">{{ $t('champion-modal-filter-all-regions') }}</option>
                     <option v-for="r in availableRegions" :key="r" :value="r">
                       {{ translateRegion(r) }}
                     </option>
@@ -130,12 +130,12 @@
 
                 <!-- 2. 역할군 (Role) -->
                 <div>
-                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">⚔️ 역할군</label>
+                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">{{ $t('champion-modal-filter-role') }}</label>
                   <select
                     v-model="filterRole"
                     class="w-full text-xs py-1 px-1.5 rounded bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="전체">전체 역할군</option>
+                    <option :value="ALL_KEY">{{ $t('champion-modal-filter-all-roles') }}</option>
                     <option v-for="role in availableRoles" :key="role" :value="role">
                       {{ translateRole(role) }}
                     </option>
@@ -144,25 +144,25 @@
 
                 <!-- 3. 공격 방식 (Attack Type) -->
                 <div>
-                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">🎯 공격 방식</label>
+                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">{{ $t('champion-modal-filter-attack-type') }}</label>
                   <select
                     v-model="filterAttackType"
                     class="w-full text-xs py-1 px-1.5 rounded bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="전체">전체 공격방식</option>
-                    <option value="melee">근거리 (Melee)</option>
-                    <option value="ranged">원거리 (Ranged)</option>
+                    <option :value="ALL_KEY">{{ $t('champion-modal-filter-all-attack-types') }}</option>
+                    <option value="melee">{{ state.locale === 'ko' ? '근거리 (Melee)' : 'Melee' }}</option>
+                    <option value="ranged">{{ state.locale === 'ko' ? '원거리 (Ranged)' : 'Ranged' }}</option>
                   </select>
                 </div>
 
                 <!-- 4. 자원 (Resource) -->
                 <div>
-                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">💧 자원 타입</label>
+                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">{{ $t('champion-modal-filter-resource') }}</label>
                   <select
                     v-model="filterResource"
                     class="w-full text-xs py-1 px-1.5 rounded bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="전체">전체 자원</option>
+                    <option :value="ALL_KEY">{{ $t('champion-modal-filter-all-resources') }}</option>
                     <option v-for="res in availableResources" :key="res" :value="res">
                       {{ translateResource(res) }}
                     </option>
@@ -171,26 +171,26 @@
 
                 <!-- 5. 성별 (Gender) -->
                 <div>
-                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">👤 성별</label>
+                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">{{ $t('champion-modal-filter-gender') }}</label>
                   <select
                     v-model="filterGender"
                     class="w-full text-xs py-1 px-1.5 rounded bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="전체">전체 성별</option>
-                    <option value="Male">남성 (Male)</option>
-                    <option value="Female">여성 (Female)</option>
-                    <option value="Other">기타 (Other)</option>
+                    <option :value="ALL_KEY">{{ $t('champion-modal-filter-all-genders') }}</option>
+                    <option value="Male">{{ state.locale === 'ko' ? '남성 (Male)' : 'Male' }}</option>
+                    <option value="Female">{{ state.locale === 'ko' ? '여성 (Female)' : 'Female' }}</option>
+                    <option value="Other">{{ state.locale === 'ko' ? '기타 (Other)' : 'Other' }}</option>
                   </select>
                 </div>
 
                 <!-- 6. 종족 (Species) -->
                 <div>
-                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">🧬 종족 (개별 성분)</label>
+                  <label class="block text-[10px] font-semibold text-gray-500 dark:text-slate-400 mb-0.5">{{ $t('champion-modal-filter-species') }}</label>
                   <select
                     v-model="filterSpecies"
                     class="w-full text-xs py-1 px-1.5 rounded bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-slate-200 focus:ring-1 focus:ring-indigo-500"
                   >
-                    <option value="전체">전체 종족</option>
+                    <option :value="ALL_KEY">{{ $t('champion-modal-filter-all-species') }}</option>
                     <option v-for="spec in availableSpecies" :key="spec" :value="spec">
                       {{ translateSpecies(spec) }}
                     </option>
@@ -212,7 +212,7 @@
                     : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700'
                 ]"
               >
-                {{ ch }}
+                {{ ch === '전체' || ch === 'All' ? $t('champion-modal-choseong-all') : ch }}
               </button>
             </div>
           </div>
@@ -234,7 +234,7 @@
                 >
                   <img
                     :src="getChampImgUrl(champ.image_path)"
-                    :alt="champ.name_ko || champ.name_en"
+                    :alt="getDisplayName(champ)"
                     class="w-full h-full object-cover"
                     @error="onImgError"
                   />
@@ -253,12 +253,12 @@
               class="py-12 text-center text-gray-500 dark:text-slate-400 space-y-2"
             >
               <p class="text-2xl">🔍</p>
-              <p class="text-sm font-medium">선택한 필터 조건과 일치하는 챔피언이 없습니다.</p>
+              <p class="text-sm font-medium">{{ $t('champion-modal-no-results') }}</p>
               <button
                 @click="resetAllFilters"
                 class="px-3 py-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded-md hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
               >
-                필터 전체 초기화
+                {{ $t('champion-modal-filter-reset') }}
               </button>
             </div>
           </div>
@@ -268,12 +268,12 @@
         <div
           class="px-4 py-2.5 border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/60 flex justify-between items-center text-xs text-gray-500 dark:text-slate-400"
         >
-          <span>💡 챔피언을 클릭하면 상세 스탯과 정보가 표시됩니다.</span>
+          <span>💡 {{ state.locale === 'ko' ? '챔피언을 클릭하면 상세 스탯과 정보가 표시됩니다.' : 'Click on a champion to view details and stats.' }}</span>
           <button
             @click="closeModal"
             class="px-4 py-1.5 text-xs font-semibold text-gray-700 dark:text-slate-200 bg-gray-200 dark:bg-slate-700 hover:bg-gray-300 dark:hover:bg-slate-600 rounded-lg transition-colors"
           >
-            닫기
+            {{ state.locale === 'ko' ? '닫기' : 'Close' }}
           </button>
         </div>
       </div>
@@ -289,6 +289,8 @@ const props = defineProps<{
 const emit = defineEmits(['close'])
 
 const state = useStore()
+const ALL_KEY = computed(() => state.locale === 'ko' ? '전체' : 'All')
+
 const searchQuery = ref('')
 const selectedChoseong = ref('전체')
 const selectedChampion = ref<any>(null)
@@ -302,7 +304,17 @@ const filterResource = ref('전체')
 const filterGender = ref('전체')
 const filterSpecies = ref('전체')
 
-const choseongFilters = ['전체', 'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
+const choseongFilters = computed(() => {
+  if (state.locale === 'ko') {
+    return ['전체', 'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
+  } else {
+    return ['All', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+  }
+})
+
+const isFilterActive = computed(() => {
+  return selectedChoseong.value !== '전체' && selectedChoseong.value !== 'All'
+})
 
 const CHOSEONG_LIST = ['ㄱ', 'ㄲ', 'ㄴ', 'ㄷ', 'ㄸ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅃ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅉ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
 const CHOSEONG_MAP: Record<string, string> = {
@@ -462,12 +474,12 @@ const availableSpecies = computed(() => {
 
 const activeFilterCount = computed(() => {
   let count = 0
-  if (filterRegion.value !== '전체') count++
-  if (filterRole.value !== '전체') count++
-  if (filterAttackType.value !== '전체') count++
-  if (filterResource.value !== '전체') count++
-  if (filterGender.value !== '전체') count++
-  if (filterSpecies.value !== '전체') count++
+  if (filterRegion.value !== '전체' && filterRegion.value !== 'All') count++
+  if (filterRole.value !== '전체' && filterRole.value !== 'All') count++
+  if (filterAttackType.value !== '전체' && filterAttackType.value !== 'All') count++
+  if (filterResource.value !== '전체' && filterResource.value !== 'All') count++
+  if (filterGender.value !== '전체' && filterGender.value !== 'All') count++
+  if (filterSpecies.value !== '전체' && filterSpecies.value !== 'All') count++
   return count
 })
 
@@ -493,11 +505,11 @@ function getDisplayName(champ: any): string {
 const filteredChampions = computed(() => {
   const list = [...(state.api_data.champions || [])]
 
-  // Korean alphabetical sort
+  // Alphabetical sort based on current locale
   list.sort((a, b) => {
     const nameA = getDisplayName(a)
     const nameB = getDisplayName(b)
-    return nameA.localeCompare(nameB, 'ko')
+    return nameA.localeCompare(nameB, state.locale || 'ko')
   })
 
   return list.filter((champ) => {
@@ -512,36 +524,36 @@ const filteredChampions = computed(() => {
 
     if (!matchesQuery) return false
 
-    // 2. Choseong Filter
-    if (selectedChoseong.value !== '전체') {
+    // 2. Choseong / Initial Letter Filter
+    if (selectedChoseong.value !== '전체' && selectedChoseong.value !== 'All') {
       const ch = getChoseong(displayName)
       if (ch !== selectedChoseong.value) return false
     }
 
     // 3. Category Select Filters with Atomic Split Logic
-    if (filterRegion.value !== '전체') {
+    if (filterRegion.value !== '전체' && filterRegion.value !== 'All') {
       const rList = (champ.region || '').split('/').map((s: string) => s.trim().toLowerCase())
       if (!rList.includes(filterRegion.value.toLowerCase())) return false
     }
 
-    if (filterRole.value !== '전체') {
+    if (filterRole.value !== '전체' && filterRole.value !== 'All') {
       if (champ.tag_1 !== filterRole.value && champ.tag_2 !== filterRole.value) return false
     }
 
-    if (filterAttackType.value !== '전체') {
+    if (filterAttackType.value !== '전체' && filterAttackType.value !== 'All') {
       if (champ.attack_type?.toLowerCase() !== filterAttackType.value.toLowerCase()) return false
     }
 
-    if (filterResource.value !== '전체') {
+    if (filterResource.value !== '전체' && filterResource.value !== 'All') {
       const resList = (champ.partype || '').split('/').map((s: string) => s.trim().toLowerCase())
       if (!resList.includes(filterResource.value.toLowerCase())) return false
     }
 
-    if (filterGender.value !== '전체') {
+    if (filterGender.value !== '전체' && filterGender.value !== 'All') {
       if (champ.gender !== filterGender.value) return false
     }
 
-    if (filterSpecies.value !== '전체') {
+    if (filterSpecies.value !== '전체' && filterSpecies.value !== 'All') {
       const sList = (champ.species || '').split('/').map((s: string) => s.trim().toLowerCase())
       if (!sList.includes(filterSpecies.value.toLowerCase())) return false
     }
@@ -552,13 +564,13 @@ const filteredChampions = computed(() => {
 
 function resetAllFilters() {
   searchQuery.value = ''
-  selectedChoseong.value = '전체'
-  filterRegion.value = '전체'
-  filterRole.value = '전체'
-  filterAttackType.value = '전체'
-  filterResource.value = '전체'
-  filterGender.value = '전체'
-  filterSpecies.value = '전체'
+  selectedChoseong.value = ALL_KEY.value
+  filterRegion.value = ALL_KEY.value
+  filterRole.value = ALL_KEY.value
+  filterAttackType.value = ALL_KEY.value
+  filterResource.value = ALL_KEY.value
+  filterGender.value = ALL_KEY.value
+  filterSpecies.value = ALL_KEY.value
 }
 
 function getChampImgUrl(path?: string): string {

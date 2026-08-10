@@ -18,7 +18,7 @@
           type="date"
           v-model="selectedDate"
           @change="onDateChange"
-          title="날짜 선택하여 챔피언 변경"
+          :title="$t('menu-date-tooltip')"
           class="rounded py-0.5 px-1 text-[11px] border border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 shadow-sm cursor-pointer w-28"
         />
       </div>
@@ -27,9 +27,9 @@
       <button
         @click="showChampionList = true"
         class="flex items-center space-x-1 py-1 px-2 text-xs font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-900 transition-colors shadow-sm cursor-pointer"
-        title="전체 챔피언 목록 보기"
+        :title="$t('menu-champion-list-tooltip')"
       >
-        <span>📜 챔피언 목록</span>
+        <span>{{ $t('menu-champion-list-button') }}</span>
       </button>
 
       <button

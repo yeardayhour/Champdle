@@ -31,7 +31,7 @@
         {{ guess_data.formula_detail }}
       </span>
       <span v-else-if="guess_data.category_score !== undefined" class="px-1.5 py-0.5 rounded bg-gray-100 dark:bg-slate-700/60 text-[11px]">
-        카테고리 {{ guess_data.category_score.toFixed(1) }}점 + 스탯 {{ guess_data.stat_score.toFixed(1) }}점
+        {{ $t('guess-result-breakdown-tooltip', { category: guess_data.category_score.toFixed(1), stat: guess_data.stat_score.toFixed(1) }) }}
       </span>
       <span v-else class="text-gray-400 text-[11px]">
         -

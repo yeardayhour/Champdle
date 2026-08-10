@@ -118,3 +118,62 @@ champion-info-attack-damage = Attack Damage (Base/Max)
 champion-info-attack-speed = Attack Speed (Base/Max)
 champion-info-armor = Armor (Base/Max)
 champion-info-spellblock = Spell Block (Base/Max) (MR)
+
+none = None
+
+# MenuBar
+menu-date-tooltip = Change Champion by selecting date
+menu-champion-list-tooltip = View all Champions list
+menu-champion-list-button = 📜 Champion List
+
+# Champion Modal
+champion-modal-title = Champion Codex
+champion-modal-count = {$filtered} / {$total} Champions
+champion-modal-back-button = ← Back to list
+champion-modal-viewing-details = Viewing champion details
+champion-modal-search-placeholder = Search champion name...
+champion-modal-filter-title = ⚙️ Filters
+champion-modal-filter-reset = 🔄 Reset
+champion-modal-filter-region = 🏛️ Region
+champion-modal-filter-all-regions = All Regions
+champion-modal-filter-role = ⚔️ Role
+champion-modal-filter-all-roles = All Roles
+champion-modal-filter-attack-type = 🎯 Attack Type
+champion-modal-filter-all-attack-types = All Attack Types
+champion-modal-filter-gender = 🚻 Gender
+champion-modal-filter-all-genders = All Genders
+champion-modal-filter-species = 🧬 Species
+champion-modal-filter-all-species = All Species
+champion-modal-filter-resource = 🧪 Resource
+champion-modal-filter-all-resources = All Resources
+champion-modal-filter-year = 📅 Release Year
+champion-modal-filter-all-years = All Years
+champion-modal-no-results = No champions match the selected filters.
+champion-modal-choseong-all = All
+
+# Share & Leaderboard
+share-worst-rank-title = Worst Rank
+share-worst-rank-value = {$value}
+share-record-button = 📝 Record Score
+share-recorded-button = ✅ Recorded
+share-record-form-title = 🏆 Save Today's Champdle Record
+share-record-summary = Guesses: {$guessCount} | Best: {$bestRank} | Worst: {$worstRank}
+share-nickname-placeholder = Enter nickname (Default: Anonymous)
+share-anonymous = Anonymous
+share-saving = Saving...
+share-saved = Saved
+share-save-button = Save
+share-leaderboard-title = 📋 Today's Player Records ({$count} Total)
+share-leaderboard-item = {$guesses} guesses (Best {$best} / Worst {$worst})
+share-record-success-alert = 🎉 Record saved successfully!
+share-record-error-alert = An error occurred while saving the record.
+share-prompt-text = Copy result to share:
+
+# Guess Result Breakdown Tooltip
+guess-result-breakdown-tooltip = Category {$category} pts + Stats {$stat} pts
+
+# Champion Info Details
+champion-info-formula-breakdown = 📊 Breakdown: {$detail}
+champion-info-category-section-title = 📌 Category Factors (80 pts max)
+champion-info-stat-section-title = 📊 Stat Factors (20 pts max)
+champion-info-release-order-value = #{$id}

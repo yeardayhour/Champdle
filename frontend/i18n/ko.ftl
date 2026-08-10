@@ -114,6 +114,65 @@ champion-info-attack-speed = 공격 속도
 champion-info-armor = 방어력
 champion-info-spellblock = 마법 저항력
 
+none = 없음
+
+# MenuBar
+menu-date-tooltip = 날짜 선택하여 챔피언 변경
+menu-champion-list-tooltip = 전체 챔피언 목록 보기
+menu-champion-list-button = 📜 챔피언 목록
+
+# Champion Modal
+champion-modal-title = 챔피언 도감
+champion-modal-count = {$filtered} / {$total}명
+champion-modal-back-button = ← 목록으로 돌아가기
+champion-modal-viewing-details = 클릭하여 상세 정보 확인 중
+champion-modal-search-placeholder = 챔피언 이름 검색...
+champion-modal-filter-title = ⚙️ 세부 필터
+champion-modal-filter-reset = 🔄 초기화
+champion-modal-filter-region = 🏛️ 소속
+champion-modal-filter-all-regions = 전체 소속
+champion-modal-filter-role = ⚔️ 역할군
+champion-modal-filter-all-roles = 전체 역할군
+champion-modal-filter-attack-type = 🎯 공격 방식
+champion-modal-filter-all-attack-types = 전체 공격 방식
+champion-modal-filter-gender = 🚻 성별
+champion-modal-filter-all-genders = 전체 성별
+champion-modal-filter-species = 🧬 종족
+champion-modal-filter-all-species = 전체 종족
+champion-modal-filter-resource = 🧪 자원
+champion-modal-filter-all-resources = 전체 자원
+champion-modal-filter-year = 📅 출시 연도
+champion-modal-filter-all-years = 전체 연도
+champion-modal-no-results = 조합 필터링된 챔피언이 없습니다.
+champion-modal-choseong-all = 전체
+
+# Share & Leaderboard
+share-worst-rank-title = 최저 유사 순위
+share-worst-rank-value = {$value}위
+share-record-button = 📝 기록하기
+share-recorded-button = ✅ 기록 완료됨
+share-record-form-title = 🏆 오늘의 챔피언 플레이 기록 저장
+share-record-summary = 시도 횟수: {$guessCount}회 | 최고 순위: {$bestRank}위 | 최저 순위: {$worstRank}위
+share-nickname-placeholder = 닉네임 입력 (기본: 익명)
+share-anonymous = 익명
+share-saving = 저장 중...
+share-saved = 완료됨
+share-save-button = 저장
+share-leaderboard-title = 📋 오늘 등록된 플레이어 기록 (총 {$count}명)
+share-leaderboard-item = {$guesses}회 시도 (최고 {$best}위 / 최저 {$worst}위)
+share-record-success-alert = 🎉 기록이 성공적으로 저장되었습니다!
+share-record-error-alert = 기록 저장 중 오류가 발생했습니다.
+share-prompt-text = 결과를 복사해 공유해보세요:
+
+# Guess Result Breakdown Tooltip
+guess-result-breakdown-tooltip = 카테고리 {$category}점 + 스탯 {$stat}점
+
+# Champion Info Details
+champion-info-formula-breakdown = 📊 계산 구성: {$detail}
+champion-info-category-section-title = 📌 공식 카테고리 항목 (80점 만점 요인)
+champion-info-stat-section-title = 📊 공식 스탯 Min-Max 항목 (20점 만점 요인)
+champion-info-release-order-value = {$id}번째
+
 # Champion Names
 
 champion-name-annie = 애니

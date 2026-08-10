@@ -54,30 +54,13 @@ export const todayPuzzleNumber = () => {
 }
 
 export const getLocale = (): string => {
-  let lang: string
   if (process.client) {
-    if (window.navigator.languages && window.navigator.languages.length) {
-      lang = window.navigator.languages[0].split("-")[0]
-    } else {
-      lang =
-        window.navigator.userLanguage ||
-        window.navigator.language ||
-        window.navigator.browserLanguage ||
-        "en"
-    }
-  } else {
-    const accept_language: string | undefined = useRequestHeaders([
-      "accept-language",
-    ])["accept-language"]
-    if (accept_language !== undefined) {
-      lang = parser.pick(Object.keys(fluentBundles), accept_language, {
-        loose: true,
-      })
-    } else {
-      lang = "en"
+    const saved = localStorage.getItem("champdle_locale")
+    if (saved && isValidFluentLocale(saved)) {
+      return saved
     }
   }
-  return lang.split("-")[0]
+  return "ko"
 }
 
 export const utf8ToB64 = (str: string): string => {

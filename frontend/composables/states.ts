@@ -47,6 +47,9 @@ export const useStore = defineStore("state", {
     },
     changeLocale(locale: string) {
       if (isValidFluentLocale(locale)) {
+        if (process.client) {
+          localStorage.setItem("champdle_locale", locale)
+        }
         changeFluentLocale(locale)
         apiChampionNameMap(locale).then((data) => {
           this.api_data.champion_local_name_map = {}

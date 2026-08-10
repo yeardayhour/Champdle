@@ -20,32 +20,32 @@
     <div class="grid grid-cols-1 zs:grid-cols-2 xs:grid-cols-3 gap-2">
       <div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mt-3">
-          시도 횟수
+          {{ $t("share-guess-count-title") }}
         </p>
         <p class="mt-1">
           <span class="inline-block text-2xl font-medium leading-none">
-            {{ guessCount }}회
+            {{ $t("share-guess-count-value", { value: String(guessCount) }) }}
           </span>
         </p>
       </div>
       <div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mt-3">
-          최고 유사 순위
+          {{ $t("share-best-rank-title") }}
         </p>
         <p class="mt-1">
           <span class="inline-block text-2xl font-medium leading-none">
-            {{ bestRank }}위
+            {{ $t("share-best-rank-value", { value: String(bestRank) }) }}
           </span>
         </p>
       </div>
 
       <div>
         <p class="text-sm font-medium text-gray-500 dark:text-slate-400 mt-3">
-          최저 유사 순위
+          {{ $t("share-worst-rank-title") }}
         </p>
         <p class="mt-1">
           <span class="inline-block text-2xl font-medium leading-none text-rose-500 dark:text-rose-400">
-            {{ worstRank }}위
+            {{ $t("share-worst-rank-value", { value: String(worstRank) }) }}
           </span>
         </p>
       </div>
@@ -73,7 +73,7 @@
         class="py-2 px-3 text-sm font-medium text-white bg-indigo-600 dark:bg-indigo-500 rounded shadow-sm hover:bg-indigo-700 dark:hover:bg-indigo-400 active:bg-indigo-800 focus:outline-none transition-colors"
         @click="toggleRecordForm"
       >
-        {{ isRecorded ? '✅ 기록 완료됨' : '📝 기록하기' }}
+        {{ isRecorded ? $t('share-recorded-button') : $t('share-record-button') }}
       </button>
     </div>
 
@@ -95,17 +95,17 @@
     <!-- 기록하기 입력 폼 영역 -->
     <div v-if="showForm && isTodayPuzzle" class="mt-4 p-4 bg-slate-50 dark:bg-slate-900 border border-indigo-300 dark:border-indigo-700 rounded-lg">
       <h4 class="font-bold text-sm text-indigo-800 dark:text-indigo-300 flex items-center gap-1.5 mb-2">
-        <span>🏆 오늘의 챔피언 플레이 기록 저장</span>
+        <span>{{ $t('share-record-form-title') }}</span>
       </h4>
       <p class="text-xs text-gray-600 dark:text-slate-400 mb-3">
-        시도 횟수: <b>{{ guessCount }}회</b> | 최고 순위: <b>{{ bestRank }}위</b> | 최저 순위: <b>{{ worstRank }}위</b>
+        {{ $t('share-record-summary', { guessCount: String(guessCount), bestRank: String(bestRank), worstRank: String(worstRank) }) }}
       </p>
 
       <div class="flex items-center gap-2">
         <input
           v-model="nicknameInput"
           type="text"
-          placeholder="닉네임 입력 (기본: 익명)"
+          :placeholder="$t('share-nickname-placeholder')"
           class="flex-1 px-3 py-1.5 text-sm bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
           :disabled="isSubmitting || isRecorded"
         />
@@ -114,22 +114,22 @@
           class="px-4 py-1.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 disabled:opacity-50 rounded transition-all"
           :disabled="isSubmitting || isRecorded"
         >
-          {{ isSubmitting ? '저장 중...' : (isRecorded ? '완료됨' : '저장') }}
+          {{ isSubmitting ? $t('share-saving') : (isRecorded ? $t('share-saved') : $t('share-save-button')) }}
         </button>
       </div>
 
       <!-- 리더보드 목록 -->
       <div v-if="savedRecords.length > 0" class="mt-4 pt-3 border-t border-gray-200 dark:border-slate-800">
         <p class="text-xs font-bold text-gray-700 dark:text-slate-300 mb-2">
-          📋 오늘 등록된 플레이어 기록 (총 {{ savedRecords.length }}명)
+          {{ $t('share-leaderboard-title', { count: String(savedRecords.length) }) }}
         </p>
         <div class="max-h-40 overflow-y-auto divide-y divide-gray-200 dark:divide-slate-800 text-xs">
           <div v-for="(rec, idx) in savedRecords" :key="idx" class="py-1.5 flex justify-between items-center">
             <span class="font-semibold text-indigo-600 dark:text-indigo-400">
-              #{{ idx + 1 }} {{ rec.nickname || '익명' }}
+              #{{ idx + 1 }} {{ rec.nickname || $t('share-anonymous') }}
             </span>
             <span class="text-gray-500 dark:text-slate-400">
-              {{ rec.guess_count }}회 시도 (최고 {{ rec.best_rank }}위 / 최저 {{ rec.worst_rank }}위)
+              {{ $t('share-leaderboard-item', { guesses: String(rec.guess_count), best: String(rec.best_rank), worst: String(rec.worst_rank) }) }}
             </span>
           </div>
         </div>
@@ -224,10 +224,10 @@ async function submitRecord() {
       }
     }
 
-    alert("🎉 기록이 성공적으로 저장되었습니다!")
+    alert(fluent.format("share-record-success-alert"))
     await loadRecords()
   } catch (err) {
-    alert("기록 저장 중 오류가 발생했습니다.")
+    alert(fluent.format("share-record-error-alert"))
   } finally {
     isSubmitting.value = false
   }
