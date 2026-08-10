@@ -85,7 +85,7 @@ def secret_index(puzzle_number: int) -> int:
         mm = int(s[2:4])
         dd = int(s[4:6])
         target_date = datetime(yy, mm, dd)
-        origin_date = datetime(2022, 4, 28)
+        origin_date = datetime(2026, 8, 11)
         days_since = (target_date - origin_date).days
     return SECRET_INDEXES[days_since % CHAMPION_SIZE]
 

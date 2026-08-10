@@ -6,8 +6,8 @@
 import parser from "accept-language-parser"
 import { Buffer } from "buffer"
 
-/** 서비스 퍼즐 기준 기점 날짜 (2022-04-28) */
-export const puzzleOriginDate = new Date("2022-04-28T00:00:00")
+/** 서비스 퍼즐 기준 기점 날짜 (2026-08-11) */
+export const puzzleOriginDate = new Date("2026-08-11T00:00:00")
 
 /**
  * YYYY-MM-DD 날짜 문자열을 퍼즐 번호(YYMMDD 포맷 정수)로 변환
