@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-
+ENV NUXT_APP_BASE_URL=/champdle/
 RUN npm run build
 
 FROM node:18-alpine AS runner

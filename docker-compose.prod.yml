@@ -8,19 +8,24 @@ services:
       - LOLMANTLE_CHAMPIONS=/data/champions.csv
       - LOLMANTLE_NAME_MAP=/data/name_map.csv
       - LOLMANTLE_PRODUCTION=True
-      - LOLMANTLE_CORS_ORIGIN=http://yeardayhour.duckdns.org:3100
+      - LOLMANTLE_CORS_ORIGIN=*
     volumes:
       - ./data:/data
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - NUXT_APP_BASE_URL=/champdle/
     restart: unless-stopped
     ports:
       - 3100:80
     environment:
-      - NUXT_PUBLIC_API_CLIENT_BASE=http://yeardayhour.duckdns.org:8100
-      - NUXT_PUBLIC_SPRITE_BASE=http://yeardayhour.duckdns.org:8101
+      - NUXT_PUBLIC_API_CLIENT_BASE=/champdle/api
+      - NUXT_PUBLIC_SPRITE_BASE=/champdle/sprites
       - NUXT_API_SERVER_BASE=http://backend:80
+      - NUXT_APP_BASE_URL=/champdle/
+      - NUXT_PUBLIC_FRONTEND_BASE=http://yeardayhour.duckdns.org/champdle
 
   sprite:
     image: nginx:alpine

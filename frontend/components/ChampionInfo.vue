@@ -34,38 +34,44 @@
         </span>
       </div>
       <div class="grid grid-cols-1 xs:grid-cols-2 gap-2">
-        <ChampionInfoBlock class="bg-white/80 dark:bg-slate-900/80 border-indigo-100 dark:border-indigo-900/40">
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-release-order') }}:</span> {{ champion.champion_id }}번째
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-region') }}:</span> {{ champion.region || 'None' }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-species') }}:</span> {{ champion.species || 'None' }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-gender') }}:</span> {{ champion.gender || 'None' }}
-          </p>
+        <ChampionInfoBlock class="bg-white/90 dark:bg-slate-900/90 border-indigo-100 dark:border-indigo-900/40 p-2 space-y-1.5">
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-release-order') }}</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ champion.champion_id }}번째</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-region') }}</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ trVal(champion.region) }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-species') }}</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ trVal(champion.species) }}</span>
+          </div>
+          <div class="flex justify-between items-center pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-gender') }}</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ trVal(champion.gender) }}</span>
+          </div>
         </ChampionInfoBlock>
 
-        <ChampionInfoBlock class="bg-white/80 dark:bg-slate-900/80 border-indigo-100 dark:border-indigo-900/40">
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-attack-type') }}:</span> {{ champion.attack_type }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-resource') }}:</span> {{ champion.partype }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-role-1') }}:</span>
-            <ChampionInfoTag :class="roleBgClass(champion.tag_1)" class="ml-1">{{ champion.tag_1 }}</ChampionInfoTag>
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-role-2') }}:</span>
-            <ChampionInfoTag :class="roleBgClass(champion.tag_2)" class="ml-1">{{
-              champion.tag_2 !== null && champion.tag_2 !== '' ? champion.tag_2 : "NONE"
+        <ChampionInfoBlock class="bg-white/90 dark:bg-slate-900/90 border-indigo-100 dark:border-indigo-900/40 p-2 space-y-1.5">
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-attack-type') }}</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ trVal(champion.attack_type) }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-resource') }}</span>
+            <span class="font-medium text-gray-800 dark:text-slate-200">{{ trVal(champion.partype) }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-role-1') }}</span>
+            <ChampionInfoTag :class="roleBgClass(champion.tag_1)">{{ trVal(champion.tag_1) }}</ChampionInfoTag>
+          </div>
+          <div class="flex justify-between items-center pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">{{ $t('champion-info-role-2') }}</span>
+            <ChampionInfoTag :class="roleBgClass(champion.tag_2)">{{
+              champion.tag_2 !== null && champion.tag_2 !== '' ? trVal(champion.tag_2) : "없음"
             }}</ChampionInfoTag>
-          </p>
+          </div>
         </ChampionInfoBlock>
       </div>
     </div>
@@ -78,40 +84,50 @@
         </span>
       </div>
       <div class="grid grid-cols-1 xs:grid-cols-2 gap-2">
-        <ChampionInfoBlock class="bg-white/80 dark:bg-slate-900/80 border-emerald-100 dark:border-emerald-900/40">
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-range') }}:</span> {{ champion.attackrange }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-movespeed') }}:</span> {{ champion.movespeed }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-hp') }}:</span> {{ champion.hp_base }} ~ {{ champion.hp_max }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-mp') }}:</span> {{ champion.mp_base }} ~ {{ champion.mp_max }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-hp-regen') }}:</span> {{ champion.hpregen_base }} ~ {{ champion.hpregen_max }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-mp-regen') }}:</span> {{ champion.mpregen_base }} ~ {{ champion.mpregen_max }}
-          </p>
+        <ChampionInfoBlock class="bg-white/90 dark:bg-slate-900/90 border-emerald-100 dark:border-emerald-900/40 p-2.5 space-y-1.5">
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">🎯 {{ $t('champion-info-range') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.attackrange }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">🏃 {{ $t('champion-info-movespeed') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.movespeed }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">❤️ {{ $t('champion-info-hp') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.hp_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.hp_max }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">💧 {{ $t('champion-info-mp') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.mp_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.mp_max }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">💖 {{ $t('champion-info-hp-regen') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.hpregen_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.hpregen_max }}</span>
+          </div>
+          <div class="flex justify-between items-center pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">💦 {{ $t('champion-info-mp-regen') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.mpregen_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.mpregen_max }}</span>
+          </div>
         </ChampionInfoBlock>
 
-        <ChampionInfoBlock class="bg-white/80 dark:bg-slate-900/80 border-emerald-100 dark:border-emerald-900/40">
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-attack-damage') }}:</span> {{ champion.attackdamage_base }} ~ {{ champion.attackdamage_max }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-attack-speed') }}:</span> {{ champion.attackspeed_base }} ~ {{ champion.attackspeed_max }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-armor') }}:</span> {{ champion.armor_base }} ~ {{ champion.armor_max }}
-          </p>
-          <p class="leading-relaxed">
-            <span class="font-semibold text-gray-700 dark:text-slate-300">{{ $t('champion-info-spellblock') }}:</span> {{ champion.spellblock_base }} ~ {{ champion.spellblock_max }}
-          </p>
+        <ChampionInfoBlock class="bg-white/90 dark:bg-slate-900/90 border-emerald-100 dark:border-emerald-900/40 p-2.5 space-y-1.5">
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">⚔️ {{ $t('champion-info-attack-damage') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.attackdamage_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.attackdamage_max }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">🗡️ {{ $t('champion-info-attack-speed') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.attackspeed_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.attackspeed_max }}</span>
+          </div>
+          <div class="flex justify-between items-center border-b border-gray-100 dark:border-slate-800 pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">🛡️ {{ $t('champion-info-armor') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.armor_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.armor_max }}</span>
+          </div>
+          <div class="flex justify-between items-center pb-1.5 last:border-0 last:pb-0">
+            <span class="text-gray-600 dark:text-slate-400 font-medium">✨ {{ $t('champion-info-spellblock') }}</span>
+            <span class="font-mono text-emerald-700 dark:text-emerald-400">{{ champion.spellblock_base }} <span class="text-gray-400 dark:text-slate-600 text-[10px]">~</span> {{ champion.spellblock_max }}</span>
+          </div>
         </ChampionInfoBlock>
       </div>
     </div>
@@ -137,16 +153,52 @@ const championImageUrl = computed(() => {
   }
 })
 
+function trVal(val: any): string {
+  if (val === null || val === undefined || val === '') return '없음'
+  if (state.locale !== 'ko') return String(val)
+  const map: Record<string, string> = {
+    // Roles
+    'Fighter': '전사',
+    'Tank': '탱커',
+    'Mage': '마법사',
+    'Assassin': '암살자',
+    'Support': '서포터',
+    'Marksman': '원거리 딜러',
+    // Attack Type
+    'Melee': '근접',
+    'Ranged': '원거리',
+    // Resource
+    'Mana': '마나',
+    'Energy': '기력',
+    'None': '자원 없음',
+    'BloodWell': '피의 샘',
+    'Rage': '분노',
+    'Courage': '용기',
+    'Shield': '기류/보호막',
+    'Fury': '분노',
+    'Ferocity': '야성',
+    'Heat': '열기',
+    'Grit': '투지',
+    'CrimsonRush': '진홍빛 저주',
+    'Flow': '기류',
+    'Other': '기타',
+    // Genders
+    'Male': '남성',
+    'Female': '여성',
+  }
+  return map[val] || String(val)
+}
+
 function roleBgClass(role?: string): string {
   if (!role) return "bg-none"
-  const class_name = {
+  const class_name: Record<string, string> = {
     Fighter: "bg-red-200 dark:bg-red-900",
     Tank: "bg-lime-200 dark:bg-lime-900",
     Mage: "bg-purple-200 dark:bg-purple-900",
     Assassin: "bg-gray-400 dark:bg-gray-700",
     Support: "bg-green-200 dark:bg-green-900",
     Marksman: "bg-orange-200 dark:bg-orange-900",
-  }[role]
-  return class_name === undefined ? "bg-none" : class_name
+  }
+  return class_name[role] || "bg-none"
 }
 </script>

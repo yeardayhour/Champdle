@@ -2,7 +2,7 @@
   <div>
     <MenuBar
       :subtitle="
-        $t('champdle-rank-subtitle', { puzzle_number: puzzle_number })
+        $t('champdle-rank-subtitle', { puzzle_number: String(puzzle_number) })
       "
     />
     <div

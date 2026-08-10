@@ -160,7 +160,7 @@ function updateStatistics() {
         : correct_guess
     state.statistics.last_best_guess = Object.assign({}, best_guess)
     state.statistics.last_correct_guess = Object.assign({}, correct_guess)
-    if (state.statistics.last_puzzle_number === state.puzzle_number - 1) {
+    if (state.statistics.last_puzzle_number === getYesterdayPuzzleNumber(state.puzzle_number)) {
       state.statistics.streak += 1
     } else {
       state.statistics.streak = 1

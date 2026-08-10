@@ -2,7 +2,7 @@
   <div>
     <MenuBar
       :subtitle="
-        $t('champdle-index-subtitle', { puzzle_number: state.puzzle_number })
+        $t('champdle-index-subtitle', { puzzle_number: String(state.puzzle_number) })
       "
     />
     <p class="text-sm text-gray-600 dark:text-slate-400 mb-4 text-center">

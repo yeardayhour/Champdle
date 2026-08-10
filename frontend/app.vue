@@ -51,6 +51,7 @@ if (loaded_puzzle_number === state.puzzle_number) {
 }
 
 const title = fluent.format("champdle")
+const baseURL = useRuntimeConfig().app.baseURL || "/"
 useHead({
   title: title,
   meta: [
@@ -62,12 +63,12 @@ useHead({
     {
       rel: "icon",
       type: "image/svg+xml",
-      href: "/favicon.svg?v=2",
+      href: `${baseURL}favicon.svg?v=2`,
     },
     {
       rel: "icon",
       type: "image/png",
-      href: "/favicon.png?v=2",
+      href: `${baseURL}favicon.png?v=2`,
     },
   ],
 })

@@ -61,3 +61,11 @@ class GuessResult(BaseModel):
     stat_score: Optional[float] = Field(None, example=18.2)
     formula_detail: Optional[str] = Field(None, example="카테고리 72.5점 + 스탯 18.2점")
 
+
+class PlayRecord(BaseModel):
+    nickname: Optional[str] = Field("익명", example="플레이어")
+    puzzle_number: int = Field(..., example=260724)
+    guess_count: int = Field(..., example=5)
+    best_rank: int = Field(..., example=1)
+    worst_rank: int = Field(..., example=140)
+    created_at: Optional[str] = None

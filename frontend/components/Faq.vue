@@ -42,10 +42,10 @@
             <NuxtLink
               :to="
                 yesterdayName
-                  ? `/rank/${state.puzzle_number - 1}/${utf8ToB64(
+                  ? `/rank/${getYesterdayPuzzleNumber(state.puzzle_number)}/${utf8ToB64(
                       yesterdayName
                     )}`
-                  : `/rank/${state.puzzle_number - 1}`
+                  : `/rank/${getYesterdayPuzzleNumber(state.puzzle_number)}`
               "
               class="text-blue-600"
               >{{ yesterdayRankLinkLabel }}
@@ -94,7 +94,10 @@ import { utf8ToB64 } from "#imports"
 const yesterdayName = ref("")
 const state = useStore()
 
-apiRank(state.puzzle_number - 1).then((data) => {
-  yesterdayName.value = data[0].name
+apiRank(getYesterdayPuzzleNumber(state.puzzle_number)).then((data) => {
+  const answer = data.find((x: any) => x.rank === 1)
+  if (answer) {
+    yesterdayName.value = answer.name
+  }
 })
 </script>

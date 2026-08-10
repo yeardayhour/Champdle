@@ -8,8 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import pandas as pd
 import numpy as np
+import json
+from datetime import datetime
 
-from .models import ErrorMessage, GuessResult, Champion, LocalName
+from .models import ErrorMessage, GuessResult, Champion, LocalName, PlayRecord
 from .similarity import calculate_ranks
 
 if "LOLMANTLE_CHAMPIONS" not in os.environ:
@@ -61,7 +63,17 @@ else:
 
 
 def secret_index(puzzle_number: int) -> int:
-    return SECRET_INDEXES[puzzle_number % CHAMPION_SIZE]
+    if puzzle_number <= 9999:
+        days_since = puzzle_number
+    else:
+        s = str(puzzle_number)
+        yy = int(s[0:2]) + 2000
+        mm = int(s[2:4])
+        dd = int(s[4:6])
+        target_date = datetime(yy, mm, dd)
+        origin_date = datetime(2022, 4, 28)
+        days_since = (target_date - origin_date).days
+    return SECRET_INDEXES[days_since % CHAMPION_SIZE]
 
 
 @app.get(
@@ -208,3 +220,44 @@ async def guess(
             message="Champion not found.",
         ).dict(),
     )
+
+
+records_path = os.environ.get("LOLMANTLE_RECORDS", "/data/champdle_records.json")
+
+@app.post("/record")
+async def save_record(rec: PlayRecord):
+    records = []
+    if os.path.exists(records_path):
+        try:
+            with open(records_path, "r", encoding="utf-8") as f:
+                records = json.load(f)
+        except Exception:
+            records = []
+
+    data = rec.dict()
+    if not data.get("nickname") or not data["nickname"].strip():
+        data["nickname"] = "익명"
+    if not data.get("created_at"):
+        data["created_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    records.append(data)
+
+    target_dir = os.path.dirname(os.path.abspath(records_path))
+    os.makedirs(target_dir, exist_ok=True)
+    with open(records_path, "w", encoding="utf-8") as f:
+        json.dump(records, f, ensure_ascii=False, indent=2)
+
+    return {"status": "ok", "message": "기록이 저장되었습니다.", "record": data}
+
+
+@app.get("/records/{puzzle_number}")
+async def get_records(puzzle_number: int):
+    if not os.path.exists(records_path):
+        return []
+    try:
+        with open(records_path, "r", encoding="utf-8") as f:
+            records = json.load(f)
+        return [r for r in records if r.get("puzzle_number") == puzzle_number]
+    except Exception:
+        return []
+

@@ -95,12 +95,19 @@ faq-issue-description = {$issue_link}에서 문의해주세요.
 
 go-back-to-main = 메인 페이지로 돌아가기
 
+champion-info-release-order = 출시 순서
 champion-info-resource = 자원
 champion-info-range = 사거리
 champion-info-role-1 = 역할군 1
 champion-info-role-2 = 역할군 2
+champion-info-gender = 성별
+champion-info-species = 종족
+champion-info-region = 소속
+champion-info-attack-type = 공격 방식
 champion-info-hp = 체력
 champion-info-mp = 마나
+champion-info-hp-regen = 체력 재생
+champion-info-mp-regen = 마나 재생
 champion-info-movespeed = 이동 속도
 champion-info-attack-damage = 공격력
 champion-info-attack-speed = 공격 속도
