@@ -3,7 +3,6 @@
  * @description 날짜 계산, 문자열 인코딩, 포맷 변환 및 기본 유틸리티 함수 모듈
  */
 
-import parser from "accept-language-parser"
 import { Buffer } from "buffer"
 
 /** 서비스 퍼즐 기준 기점 날짜 (2022-04-28) */
