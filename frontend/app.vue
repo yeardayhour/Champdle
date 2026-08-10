@@ -17,8 +17,10 @@ sprite_base.value = config.public.spriteBase
 const state = useStore()
 
 state.locale = getLocale()
-watchEffect(async () => {
-  state.changeLocale(state.locale)
+watchEffect(() => {
+  if (state.locale) {
+    state.changeLocale(state.locale)
+  }
 })
 
 state.puzzle_number = todayPuzzleNumber()
