@@ -1,19 +1,24 @@
-from typing import List
+"""
+Champdle 메인 FastAPI 웹 애플리케이션 모듈
+"""
 
+from typing import List
 import os
 from random import Random
+from datetime import datetime
+import json
+import re
 
 from fastapi import FastAPI, Query, Path
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import pandas as pd
 import numpy as np
-import json
-from datetime import datetime
 
 from .models import ErrorMessage, GuessResult, Champion, LocalName, PlayRecord
 from .similarity import calculate_ranks
 
+# 환경 변수 기본값 설정
 if "LOLMANTLE_CHAMPIONS" not in os.environ:
     os.environ["LOLMANTLE_CHAMPIONS"] = "/data/champions.csv"
 
@@ -22,7 +27,7 @@ if "LOLMANTLE_NAME_MAP" not in os.environ:
 
 RANDOM = Random(os.environ.get("LOLMANTLE_RANDOM_SEED", 20260725))
 
-# Use the environment variables, fallback to local paths if running outside docker
+# 챔피언 데이터 파일 경로 산출
 champions_path = os.environ.get("LOLMANTLE_CHAMPIONS", "../data/champions.csv")
 name_map_path = os.environ.get("LOLMANTLE_NAME_MAP", "../data/name_map.csv")
 
@@ -31,6 +36,7 @@ if not os.path.exists(champions_path):
 if not os.path.exists(name_map_path):
     name_map_path = os.path.join(os.path.dirname(__file__), '../../data/name_map.csv')
 
+# CSV 데이터로드
 CHAMPIONS = pd.read_csv(champions_path).replace({np.nan: None})
 CHAMPION_NAME_MAP = pd.read_csv(name_map_path)
 
@@ -38,10 +44,13 @@ CHAMPION_SIZE = len(CHAMPIONS.index)
 SECRET_INDEXES = RANDOM.sample(range(CHAMPION_SIZE), k=CHAMPION_SIZE)
 
 app = FastAPI(
+    title="Champdle API",
+    description="League of Legends Champion Wordle-like Game API",
     docs_url=None if os.environ.get("LOLMANTLE_PRODUCTION", False) else "/docs",
     redoc_url=None,
 )
 
+# CORS 미들웨어 구성
 if not os.environ.get("LOLMANTLE_PRODUCTION", False):
     app.add_middleware(
         CORSMiddleware,
@@ -63,6 +72,11 @@ else:
 
 
 def secret_index(puzzle_number: int) -> int:
+    """
+    퍼즐 번호에 대응하는 오늘의 정답 챔피언 인덱스 산출
+    :param puzzle_number: 퍼즐 번호 (0~9999 일수 또는 YYMMDD 날짜)
+    :return: 시크릿 정답 인덱스 (0 ~ CHAMPION_SIZE-1)
+    """
     if puzzle_number <= 9999:
         days_since = puzzle_number
     else:
@@ -76,6 +90,17 @@ def secret_index(puzzle_number: int) -> int:
     return SECRET_INDEXES[days_since % CHAMPION_SIZE]
 
 
+def normalize_champion_name(s) -> str:
+    """
+    챔피언 명칭의 특수문자 및 공백 제거, 소문자 정규화
+    :param s: 원본 챔피언 문자열
+    :return: 정규화된 텍스트
+    """
+    if s is None or pd.isna(s):
+        return ""
+    return re.sub(r"[^a-zA-Z0-9가-힣]", "", str(s)).lower()
+
+
 @app.get(
     "/languages",
     response_model=List[str],
@@ -86,7 +111,7 @@ def secret_index(puzzle_number: int) -> int:
     },
 )
 async def languages():
-    """The list of all languages"""
+    """지원 언어 명칭 컬럼 리스트 반환"""
     return [name for name in CHAMPION_NAME_MAP.columns]
 
 
@@ -95,7 +120,7 @@ async def languages():
     response_model=List[Champion],
 )
 async def champions():
-    """The list of all Champions"""
+    """전체 챔피언 메타데이터 리스트 반환"""
     return [CHAMPIONS.loc[i].to_dict() for i in CHAMPIONS.index]
 
 
@@ -104,10 +129,9 @@ async def champions():
     response_model=List[LocalName],
 )
 async def champion_name_map(
-    language: str = Path(..., description="The language to use", example="local_name"),
+    language: str = Path(..., description="조회 언어 코드 (ko, en)", example="ko"),
 ):
-    """The list of all Champion's local names"""
-
+    """지정 언어 기준 챔피언 명칭 매핑 리스트 반환"""
     col = "local_name" if language == "ko" else "english_name"
     items = [CHAMPION_NAME_MAP.loc[i] for i in CHAMPION_NAME_MAP.index]
     return [
@@ -124,9 +148,9 @@ async def champion_name_map(
     response_model=List[GuessResult],
 )
 async def rank(
-    puzzle_number: int = Path(..., description="Number of Lolmantle.", example=1),
+    puzzle_number: int = Path(..., description="퍼즐 일자 번호", example=260810),
 ):
-    """Similarity ranking"""
+    """오늘의 정답 대비 전체 173개 챔피언의 유사도 순위 리스트 계산 및 반환"""
     index = secret_index(puzzle_number)
     ranks = calculate_ranks(
         champion_index=index,
@@ -134,12 +158,6 @@ async def rank(
     )
     return ranks
 
-
-def normalize_champion_name(s) -> str:
-    if s is None or pd.isna(s):
-        return ""
-    import re
-    return re.sub(r"[^a-zA-Z0-9가-힣]", "", str(s)).lower()
 
 @app.get(
     "/guess/{puzzle_number}",
@@ -160,10 +178,10 @@ def normalize_champion_name(s) -> str:
     },
 )
 async def guess(
-    puzzle_number: int = Path(..., description="Number of Lolmantle.", example=1),
-    name: str = Query(..., description="Champion's English or Korean name or alias.", example="Annie"),
+    puzzle_number: int = Path(..., description="퍼즐 일자 번호", example=260810),
+    name: str = Query(..., description="추측한 챔피언 이름/별칭", example="애니"),
 ):
-    """Guess the Champion"""
+    """입력한 챔피언 매칭 및 정답과의 유사도/순위 산출 결과 반환"""
     index = secret_index(puzzle_number)
     ranks = calculate_ranks(
         champion_index=index,
@@ -180,12 +198,12 @@ async def guess(
             ).dict(),
         )
 
-    # 1. Direct match on guess_result.name
+    # 1. 계산된 결과 이름 직접 매칭
     for guess_result in ranks:
         if normalize_champion_name(guess_result.name) == clean_target:
             return guess_result
 
-    # 2. Check against CHAMPIONS dataset columns (name_en, name_ko, alias)
+    # 2. CHAMPIONS 메타데이터 컬럼 매칭 (영문, 국문, 별칭)
     matched_index = None
     for idx, row in CHAMPIONS.iterrows():
         n_en = normalize_champion_name(row.get('name_en'))
@@ -195,7 +213,7 @@ async def guess(
             matched_index = idx
             break
 
-    # 3. Check against CHAMPION_NAME_MAP (english_name, local_name)
+    # 3. NAME_MAP 언어 맵 컬럼 매칭
     if matched_index is None:
         for _, row in CHAMPION_NAME_MAP.iterrows():
             n_eng = normalize_champion_name(row.get('english_name'))
@@ -224,8 +242,10 @@ async def guess(
 
 records_path = os.environ.get("LOLMANTLE_RECORDS", "/data/champdle_records.json")
 
+
 @app.post("/record")
 async def save_record(rec: PlayRecord):
+    """플레이어 퍼즐 클리어 성적 저장 API"""
     records = []
     if os.path.exists(records_path):
         try:
@@ -252,6 +272,7 @@ async def save_record(rec: PlayRecord):
 
 @app.get("/records/{puzzle_number}")
 async def get_records(puzzle_number: int):
+    """지정 퍼즐 일자의 리더보드 플레이 기록 목록 반환"""
     if not os.path.exists(records_path):
         return []
     try:
@@ -260,4 +281,3 @@ async def get_records(puzzle_number: int):
         return [r for r in records if r.get("puzzle_number") == puzzle_number]
     except Exception:
         return []
-
