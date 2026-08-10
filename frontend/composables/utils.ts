@@ -3,6 +3,7 @@
  * @description 날짜 계산, 문자열 인코딩, 포맷 변환 및 기본 유틸리티 함수 모듈
  */
 
+import parser from "accept-language-parser"
 import { Buffer } from "buffer"
 
 /** 서비스 퍼즐 기준 기점 날짜 (2022-04-28) */
@@ -78,8 +79,8 @@ export const todayPuzzleNumber = (): number => {
 }
 
 /**
- * 현재 클라이언트 설정 언어 반환 (기본값: 한국어 'ko')
- * @returns {string} 언어 코드
+ * 사용자 설정 및 브라우저/헤더 기반 자동 언어 감지 반환
+ * @returns {string} 언어 코드 ('ko', 'en')
  */
 export const getLocale = (): string => {
   if (process.client) {
@@ -88,7 +89,35 @@ export const getLocale = (): string => {
       return saved
     }
   }
-  return "ko"
+
+  let lang: string = "en"
+  if (process.client) {
+    if (window.navigator.languages && window.navigator.languages.length) {
+      lang = window.navigator.languages[0].split("-")[0]
+    } else {
+      lang = (
+        (window.navigator as any).userLanguage ||
+        window.navigator.language ||
+        (window.navigator as any).browserLanguage ||
+        "en"
+      ).split("-")[0]
+    }
+  } else {
+    const accept_language: string | undefined = useRequestHeaders([
+      "accept-language",
+    ])["accept-language"]
+    if (accept_language !== undefined) {
+      lang =
+        parser.pick(Object.keys(fluentBundles), accept_language, {
+          loose: true,
+        }) || "en"
+    } else {
+      lang = "en"
+    }
+  }
+
+  const cleanLang = lang.split("-")[0]
+  return isValidFluentLocale(cleanLang) ? cleanLang : "en"
 }
 
 /**
