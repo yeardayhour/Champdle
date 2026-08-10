@@ -7,7 +7,7 @@
 </template>
 
 <script setup lang="ts">
-import { trackRouter, useState } from "vue-gtag-next"
+import { trackRouter, useState as useGtagState } from "vue-gtag-next"
 
 const config = useRuntimeConfig()
 api_server_base.value = config.apiServerBase
@@ -78,8 +78,11 @@ useHead({
 if (process.env.NODE_ENV === "production" && process.client) {
   const router = useRouter()
   trackRouter(router)
-  useState().property.value = {
-    id: config.public.gtagId,
+  const gtagState = useGtagState() as any
+  if (gtagState && gtagState.property) {
+    gtagState.property.value = {
+      id: config.public.gtagId,
+    }
   }
 }
 </script>
