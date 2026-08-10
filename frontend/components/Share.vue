@@ -158,10 +158,15 @@ const guessCount = computed(() => {
   return state.statistics?.last_guess_count || state.guess_data_list?.length || 1
 })
 
-// 최고 유사 순위 (최소 rank 번호)
+// 최고 유사 순위 (정답 제외 최고 순위, 1회차 정답 시 1위)
 const bestRank = computed(() => {
+  if (state.statistics?.last_best_guess?.rank !== undefined) {
+    return state.statistics.last_best_guess.rank
+  }
   if (!state.guess_data_list || state.guess_data_list.length === 0) return 1
-  return Math.min(...state.guess_data_list.map((g) => g.rank))
+  const nonCorrect = state.guess_data_list.filter((g) => g.rank > 1)
+  if (nonCorrect.length === 0) return 1
+  return Math.min(...nonCorrect.map((g) => g.rank))
 })
 
 // 최저 유사 순위 (최대 rank 번호)
